@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Files clsid="{215B2E53-57CE-475c-80FE-9EEC14635851}"><File clsid="{50BE44C8-567A-4ed1-B1D0-9234FE1F38AF}" name="GPODeployMonitoring.ps1" status="GPODeployMonitoring.ps1" image="1" changed="2021-08-04 09:11:59" uid="{9F804156-F30A-49A5-BDB5-20F5845939BB}" bypassErrors="1"><Properties action="R" fromPath="\\DomainFQDN\NETLOGON\Env\Computer\Azure\GPODeployMonitoring.ps1" targetPath="C:\Windows\Temp\GPODeployMonitoring.ps1" readOnly="0" archive="1" hidden="0" suppress="0"/><Filters/></File>
+</Files>
