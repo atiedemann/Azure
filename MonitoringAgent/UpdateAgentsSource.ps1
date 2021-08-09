@@ -8,7 +8,7 @@ Description:    This script deploy the Microsoft Monitoring Agent and
 ###########################################################################
 # Variables
 ###########################################################################
-$DomainFQDN = (Get-ADDomain).DnsRoot
+$DomainFQDN = $env:USERDNSDOMAIN
 
 $Sources = @([PsCustomObject]@{
     Name = 'InstallDependencyAgent-Windows.exe'

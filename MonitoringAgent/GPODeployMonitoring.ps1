@@ -216,7 +216,6 @@ namespace Microsoft.WindowsAzure.Internal
 } 
 "@ 
 Add-Type -TypeDefinition $source  
-$DomainName = (Get-ADDomain).DnsRoot
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 ###########################################################################
 # Functions
