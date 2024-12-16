@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Files clsid="{215B2E53-57CE-475c-80FE-9EEC14635851}"><File clsid="{50BE44C8-567A-4ed1-B1D0-9234FE1F38AF}" name="GPODeployAzureArc.ps1" status="GPODeployAzureArc.ps1" image="2" changed="2024-12-13 11:09:16" uid="{B75E41DA-A9A6-43A5-915A-723DCA77F845}"><Properties action="U" fromPath="\\contoso.bborg.net\NETLOGON\Env\Computer\Azure\GPODeployAzureArc.ps1" targetPath="C:\Windows\Temp\GPODeployAzureArc.ps1" readOnly="0" archive="1" hidden="0" suppress="0"/></File>
+</Files>

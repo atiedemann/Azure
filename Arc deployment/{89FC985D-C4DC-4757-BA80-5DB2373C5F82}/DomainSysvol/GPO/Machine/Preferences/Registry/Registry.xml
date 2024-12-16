@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RegistrySettings clsid="{A3CCFC41-DFDB-43a5-8D26-0FE8B954DA51}">
+	<Collection clsid="{53B533F5-224C-47e3-B01B-CA3B3F3FF4BF}" name="Azure Arc">
+		<Registry clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}" name="ArcSpnId" status="ArcSpnId" image="6" changed="2023-10-11 07:56:29" uid="{A34FA5CA-B72E-40F0-AC72-D69689E24339}"><Properties action="R" displayDecimal="0" default="0" hive="HKEY_LOCAL_MACHINE" key="SOFTWARE\Microsoft\AzureArc" name="ArcSpnId" type="REG_SZ" value=""/></Registry>
+		<Registry clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}" name="ArcSecret" status="ArcSecret" image="6" changed="2024-12-13 11:13:06" uid="{6FA9E76E-02DF-4990-99FF-3BB51697D99A}"><Properties action="R" displayDecimal="0" default="0" hive="HKEY_LOCAL_MACHINE" key="SOFTWARE\Microsoft\AzureArc" name="ArcSecret" type="REG_SZ" value=""/></Registry>
+		<Registry clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}" name="ArcSubscriptionId" status="ArcSubscriptionId" image="6" changed="2023-10-11 07:57:24" uid="{D742F49F-96B5-4D91-9627-722B67CEDF2B}"><Properties action="R" displayDecimal="0" default="0" hive="HKEY_LOCAL_MACHINE" key="SOFTWARE\Microsoft\AzureArc" name="ArcSubscriptionId" type="REG_SZ" value=""/></Registry>
+		<Registry clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}" name="ArcTenantId" status="ArcTenantId" image="6" changed="2023-03-06 12:46:03" uid="{FA5D8F5E-4826-4D4B-856E-AACB8EE10AD7}"><Properties action="R" displayDecimal="0" default="0" hive="HKEY_LOCAL_MACHINE" key="SOFTWARE\Microsoft\AzureArc" name="ArcTenantId" type="REG_SZ" value=""/></Registry>
+		<Registry clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}" name="ArcLocation" status="ArcLocation" image="6" changed="2023-03-06 12:46:21" uid="{8A0AAEC1-453D-4A08-BAFB-9EDBA1E093C8}"><Properties action="R" displayDecimal="0" default="0" hive="HKEY_LOCAL_MACHINE" key="SOFTWARE\Microsoft\AzureArc" name="ArcLocation" type="REG_SZ" value="westeurope"/></Registry>
+		<Registry clsid="{9CD4B2F4-923D-47f5-A062-E897DD1DAD50}" name="ArcResourceGroup" status="ArcResourceGroup" image="6" changed="2024-12-16 08:08:01" uid="{5645CFF4-2A96-4A3F-AF1E-EA909CD9C0AF}"><Properties action="R" displayDecimal="0" default="0" hive="HKEY_LOCAL_MACHINE" key="SOFTWARE\Microsoft\AzureArc" name="ArcResourceGroup" type="REG_SZ" value=""/></Registry>
+	</Collection>
+</RegistrySettings>
