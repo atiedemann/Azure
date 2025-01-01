@@ -15,6 +15,7 @@ $azureCloud = 'AzureCloud'
 $connectToCloud = $false
 $env:AUTH_TYPE = 'principal'
 
+$pathPrg = "C:\Program Files\AzureConnectedMachineAgent\azcmagent.exe"
 ###########################################################################
 # Functions
 ###########################################################################
@@ -40,18 +41,19 @@ function GetRegistryValue {
 ###########################################################################
 # Get Client configuration
 $Config = @{
-    arcSpnId          = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzurArc' -Name 'arcSpnId')
-    arcSecret         = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzurArc' -Name 'arcSecret')
-    arcSubscriptionId = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzurArc' -Name 'arcSubscriptionId')
-    arcTenantId       = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzurArc' -Name 'arcTenantId')
-    arcLocation       = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzurArc' -Name 'arcLocation')
-    arcResourceGroup  = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzurArc' -Name 'arcResourceGroup')
+    arcSpnId          = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzureArc' -Name 'arcSpnId')
+    arcSecret         = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzureArc' -Name 'arcSecret')
+    arcSubscriptionId = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzureArc' -Name 'arcSubscriptionId')
+    arcTenantId       = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzureArc' -Name 'arcTenantId')
+    arcLocation       = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzureArc' -Name 'arcLocation')
+    arcResourceGroup  = (GetRegistryValue -Path 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\AzureArc' -Name 'arcResourceGroup')
 }
 
 # Add the service principal application ID and secret here
 $servicePrincipalSecret = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($Config.arcSecret))
 
-if ((Test-Path -Path 'C:\Program Files\AzureConnectedMachineAgent\azcmagent.exe' -ErrorAction SilentlyContinue) -ne $true -and $Config.arcSecret.length -gt 64) {
+#Install if Azure Connected machine agent is not installed
+if ((Test-Path -Path $pathPrg -ErrorAction SilentlyContinue) -ne $true -and $Config.arcSecret.length -gt 64) {
     try {
         # Download the installation package
         Invoke-WebRequest -UseBasicParsing -Uri 'https://aka.ms/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1"
@@ -68,10 +70,10 @@ if ((Test-Path -Path 'C:\Program Files\AzureConnectedMachineAgent\azcmagent.exe'
         Write-Host $_.Exception.Message
     }
 } else {
-    # FIrst check running configuration
-    $arcConfig = & "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe" show -j | ConvertFrom-Json
+    # If installed fIrst check running configuration
+    $arcConfig = & $pathPrg show -j | ConvertFrom-Json
 
-    # check config
+    # check config and if somthing is different reconnect to the correct settings
     if (
         ($arcConfig.resourceGroup -ne $config.arcResourceGroup -or
         $arcConfig.subscriptionId -ne $config.arcSubscriptionId -or
@@ -81,18 +83,24 @@ if ((Test-Path -Path 'C:\Program Files\AzureConnectedMachineAgent\azcmagent.exe'
     ) {
         Write-Host "`n`n`tAzure Connected Machine Agent configuration is not as desired, we disconnect and reconnect the device`n`n" -ForegroundColor Red
         # First disconnect this agent
-        & "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe" disconnect --service-principal-id $Config.arcSpnId --service-principal-secret $servicePrincipalSecret --user-tenant-id $Config.arcTenantId
+        & $pathPrg disconnect --service-principal-id $Config.arcSpnId --service-principal-secret $servicePrincipalSecret --user-tenant-id $Config.arcTenantId
 
         if ($? -eq $true) {
             $connectToCloud = $true
         }
     }
+
+    # If state is disconnected connect it with same configuration
+    # this will help if machine is in expired state
+    if ($arcConfig.status -eq 'Disconnected'){
+        $connectToCloud = $true
+    }
 }
 
 
 # Start connect or reconnect to Azure
-if ($connectToCloud -eq $true) {
-    & "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe" connect --service-principal-id $Config.arcSpnId --service-principal-secret $servicePrincipalSecret --resource-group $Config.arcResourceGroup --tenant-id $Config.arcTenantId --location $Config.arcLocation --subscription-id $Config.arcSubscriptionId --cloud $azureCloud --tags '' --correlation-id ([guid]::NewGuid()).guid
+if ($connectToCloud -eq $true -and $Config.arcSpnId.Length -gt 0 -and $servicePrincipalSecret.Length -gt 0) {
+    & $pathPrg connect --service-principal-id $Config.arcSpnId --service-principal-secret $servicePrincipalSecret --resource-group $Config.arcResourceGroup --tenant-id $Config.arcTenantId --location $Config.arcLocation --subscription-id $Config.arcSubscriptionId --cloud $azureCloud  --correlation-id ([guid]::NewGuid()).guid
 }
 ###########################################################################
 # Finally
