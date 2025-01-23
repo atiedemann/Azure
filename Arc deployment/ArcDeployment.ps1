@@ -65,7 +65,11 @@ $servicePrincipalSecret = [System.Text.Encoding]::Unicode.GetString([System.Conv
 if ((Test-Path -Path $pathPrg -ErrorAction SilentlyContinue) -ne $true -and $Config.arcSecret.length -gt 64) {
     try {
         # Download the installation package
-        Invoke-WebRequest -UseBasicParsing -Uri 'https://aka.ms/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1"
+        if ($config.arcProxyUrl.length -gt 0) {
+            Invoke-WebRequest -UseBasicParsing -Uri 'https://gbl.his.arc.azure.com/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1" -Proxy $config.arcProxyUrl
+        } else {
+            Invoke-WebRequest -UseBasicParsing -Uri 'https://gbl.his.arc.azure.com/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1"
+        }
 
         # Install the hybrid agent
         & "$env:TEMP\install_windows_azcmagent.ps1"
@@ -111,11 +115,6 @@ if ($arcConfig.status -eq 'Disconnected') {
 # Checking running configuration
 if ($arcConfig.upstreamProxy.length -eq 0 -and $config.arcProxyUrl.length -gt 0) {
     Write-Host ('Configure system to use a proxy server url: {0}' -f $config.arcProxyUrl) -ForegroundColor Green
-
-    # Set environment https Proxy
-    $env:HTTP_PROXY = $config.arcProxyUrl
-    $env:HTTPS_PROXY = $config.arcProxyUrl
-
     & $pathPrg config set proxy.url $config.arcProxyUrl
 } elseif ($arcConfig.upstreamProxy.length -gt 0 -and $config.arcProxyUrl.length -eq 0) {
     Write-Host 'Configure system to connect directly' -ForegroundColor Green
