@@ -108,7 +108,19 @@ if ($arcConfig.status -eq 'Disconnected') {
     $connectToCloud = $true
 }
 
+# Checking running configuration
+if ($arcConfig.upstreamProxy.length -eq 0 -and $config.arcProxyUrl.length -gt 0) {
+    Write-Host ('Configure system to use a proxy server url: {0}' -f $config.arcProxyUrl) -ForegroundColor Green
 
+    # Set environment https Proxy
+    $env:HTTP_PROXY = $config.arcProxyUrl
+    $env:HTTPS_PROXY = $config.arcProxyUrl
+
+    & $pathPrg config set proxy.url $config.arcProxyUrl
+} elseif ($arcConfig.upstreamProxy.length -gt 0 -and $config.arcProxyUrl.length -eq 0) {
+    Write-Host 'Configure system to connect directly' -ForegroundColor Green
+    & $pathPrg config clear proxy.url
+}
 
 # Start connect or reconnect to Azure
 if ($connectToCloud -eq $true -and $Config.arcSpnId.Length -gt 0 -and $servicePrincipalSecret.Length -gt 0) {
@@ -137,12 +149,6 @@ config.mode
 guestconfiguration.agent.cpulimit
 extensions.agent.cpulimit
 #>
-
-# Checking running configuration
-if ($arcConfig.upstreamProxy.length -eq 0 -and $config.arcProxyUrl.length -gt 0) {
-    Write-Host ('Configure system to use a proxy server url: {0}' -f $config.arcProxyUrl) -ForegroundColor Green
-    & $pathPrg config set proxy.url $config.arcProxyUrl
-}
 
 # Secure Tier0 systems
 if ($config.arcTier0 -eq $true -and
