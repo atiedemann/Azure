@@ -66,15 +66,22 @@ if ((Test-Path -Path $pathPrg -ErrorAction SilentlyContinue) -ne $true -and $Con
     try {
         # Download the installation package
         if ($config.arcProxyUrl.length -gt 0) {
+            #Invoke-WebRequest -UseBasicParsing -Uri 'https://aka.ms/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1" -Proxy $config.arcProxyUrl
             Invoke-WebRequest -UseBasicParsing -Uri 'https://gbl.his.arc.azure.com/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1" -Proxy $config.arcProxyUrl
-        } else {
-            Invoke-WebRequest -UseBasicParsing -Uri 'https://gbl.his.arc.azure.com/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1"
-        }
+            # Install the hybrid agent
+            & "$env:TEMP\install_windows_azcmagent.ps1" -Proxy $config.arcProxyUrl
+            if ($LASTEXITCODE -ne 0) {
+                exit 1
+            }
 
-        # Install the hybrid agent
-        & "$env:TEMP\install_windows_azcmagent.ps1"
-        if ($LASTEXITCODE -ne 0) {
-            exit 1
+        } else {
+            #Invoke-WebRequest -UseBasicParsing -Uri 'https://aka.ms/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1"
+            Invoke-WebRequest -UseBasicParsing -Uri 'https://gbl.his.arc.azure.com/azcmagent-windows' -TimeoutSec 30 -OutFile "$env:TEMP\install_windows_azcmagent.ps1"
+            # Install the hybrid agent
+            & "$env:TEMP\install_windows_azcmagent.ps1"
+            if ($LASTEXITCODE -ne 0) {
+                exit 1
+            }
         }
 
         # Run connect command
