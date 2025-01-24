@@ -19,6 +19,14 @@ param(
 $azureCloud = 'AzureCloud'
 $connectToCloud = $false
 $env:AUTH_TYPE = 'principal'
+<#
+    Enable Azure Connected Machine Agent alloed for these extension for Tier 0 System
+    - Microsoft.Azure.Monitor                   = AzureMonitorWindowsAgent
+    - Microsoft.Azure.AzureDefenderForServers   = MDE.Windows
+    - Microsoft.CPlat.Core                      = WindowsPatchExtension
+    - Microsoft.SoftwareUpdateManagement        = WindowsOsUpdateExtension
+#>
+$extensionsAllowList = 'Microsoft.Azure.Monitor/AzureMonitorWindowsAgent,Microsoft.Azure.AzureDefenderForServers/MDE.Windows,Microsoft.CPlat.Core/WindowsPatchExtension,Microsoft.SoftwareUpdateManagement/WindowsOsUpdateExtension'
 
 $pathPrg = 'C:\Program Files\AzureConnectedMachineAgent\azcmagent.exe'
 $updateExtension = $false
@@ -167,8 +175,6 @@ if ($config.arcTier0 -eq $true -and
 }
 
 if ($config.arcTier0 -eq $true) {
-    $extensionsAllowList = 'Microsoft.Azure.Monitor/AzureMonitorWindowsAgent,Microsoft.Azure.AzureDefenderForServers/MDE.Windows'
-
     foreach ($extension in $extensionsAllowList.Split(',')) {
         if (($arcLocalSettings.localsettings | Where-Object Key -EQ 'extensions.allowlist').value -notcontains $extension) {
             $updateExtension = $true
