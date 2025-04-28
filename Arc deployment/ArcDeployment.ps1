@@ -172,6 +172,10 @@ if ($config.arcTier0 -eq $true -and
     Write-Host 'Configure system for Tier 0 environment and disable some function' -ForegroundColor Green
     & $pathPrg config set incomingconnections.enabled false
     & $pathPrg config set guestconfiguration.enabled false
+} else {
+    Write-Host 'Remove system configuration for Tier 0 environment and enable all extension' -ForegroundColor Green
+    & $pathPrg config clear incomingconnections.enabled
+    & $pathPrg config clear guestconfiguration.enabled
 }
 
 if ($config.arcTier0 -eq $true) {
