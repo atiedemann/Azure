@@ -147,6 +147,15 @@ if ($connectToCloud -eq $true -and $Config.arcSpnId.Length -gt 0 -and $servicePr
     }
 }
 
+# Configure connection type
+if ($config.arcGateway.length -eq 0) {
+    Write-Host 'Direct connect to Arc' -ForegroundColor Green
+    & $pathPrg config set connection.type direct
+} else {
+    Write-Host 'Gateway connect to Arc' -ForegroundColor Green
+    & $pathPrg config set connection.type gateway
+}
+
 <#
 Possible valid values from Version 1.48.02881.1941
 
